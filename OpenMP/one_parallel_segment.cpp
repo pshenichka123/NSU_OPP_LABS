@@ -97,6 +97,7 @@ simple_init(A,b,N,x);
  double* x_new;
  double* top;
 double bot_module;
+    double top_module;
      while (!is_good_answer)  
         {
         #pragma omp parallel
@@ -124,7 +125,7 @@ double bot_module;
             x=x_new;
         
             top=(double*)calloc(N,sizeof(double));
-            double top_module=0;
+            top_module=0;
             }
 
             #pragma omp for
