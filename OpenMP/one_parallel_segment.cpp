@@ -9,6 +9,8 @@ static const double tay=0.00001;
 
 
 
+
+
 void simple_init(double* A, double* b, int N, double* x)
 {
 for( int i=0;i<N;i++)
@@ -89,20 +91,101 @@ puts("aaa\n");
 
 simple_init(A,b,N,x);
  clock_t start= clock();
-while(!Good_Answer(A,b,x,N))
-{
-    x=Ansewer_iteration(x,A,b,N);
-   
-///puts("aaa\n");
+ bool is_good_answer=false;
+ puts("after init\n");
 
+ double* x_new;
+ double* top;
+double bot_module;
+     while (!is_good_answer)  
+        {
+        #pragma omp parallel
+            {
+          
+            {
+          #pragma omp single    
+            x_new=(double*)calloc(N,sizeof(double));
+            
 
-}
+        #pragma omp for
+            for(int i=0;i<N;i++)
+            {
+                double correction=0;
+                for(int j=0;j<N;j++)
+                {
+                    correction+=A[i*N+j]*x[j];
+                }
+                x_new[i]=x[i]-tay*(correction-b[i]);
+            }
+           
+           #pragma omp single
+            {
+            free(x);
+            x=x_new;
+        
+            top=(double*)calloc(N,sizeof(double));
+            double top_module=0;
+            }
+
+            #pragma omp for
+            for(int i=0;i<N;i++)
+            {
+                top[i]=0;
+                for(int j=0;j<N;j++)
+                {
+                    top[i]+=A[i*N+j]*x[j];
+                }
+                top[i]-=b[i];
+            }
+            
+            #pragma omp for
+            for(int i=0;i<N;i++)
+            {
+                top_module+=top[i]*top[i];
+            }
+            #pragma omp single
+            {
+            top_module=sqrt(top_module);
+            free(top);
+            bot_module=0;
+            }
+            
+           #pragma omp for
+            for(int i=0;i<N;i++)
+            {
+                bot_module+=b[i]*b[i];
+            }
+           
+              {
+                bot_module=sqrt(bot_module);
+                if(top_module/bot_module<eps)
+                {
+                
+                    is_good_answer=true;
+                }
+                else
+                {
+                    //printf("\n%f\n", top_module/bot_module);
+                
+                    is_good_answer=false;
+                } 
+              }            
+            }
+        }
+        }
+     
+ 
+ 
+        puts("aaa\n");
+
+ 
+
 
 clock_t end= clock();
 
-//for(int i=0;i<N;i++){printf("%f ,  %f\n",x[i],0);}
+    puts("\n");
+    printf("time=%d\n", (end-start));
+   // for(int i=0;i<N;i++){printf("%f ,  %f\n",x[i],0);}
 
-puts("\n");
-printf("time=%d\n", (end-start)/1000);
-
+    return 0;
 }
