@@ -4,8 +4,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <time.h>
+#include <omp.h>
 static const double eps=0.00001;
 static const double tay=0.00001;
+
+
 
 
 
@@ -82,25 +85,28 @@ double* A=(double*)calloc(N*N,sizeof(double));
 double* b=(double*)calloc(N,sizeof(double));
 double* x=(double*)calloc(N,sizeof(double));
 
-double* u;
 
 //u=strong_init(A,b,N);
 puts("aaa\n");
 
 simple_init(A,b,N,x);
- clock_t start= clock();
+double start = omp_get_wtime();
  bool is_good_answer=false;
  puts("after init\n");
 
  double* x_new;
+ double* top;
+double bot_module;
+    double top_module;
     
-     while (!is_good_answer)  
+    while (true)  
         {
-            
+        
+             
             x_new=(double*)calloc(N,sizeof(double));
             
 
-            #pragma omp parallel for 
+        #pragma omp parallel for
             for(int i=0;i<N;i++)
             {
                 double correction=0;
@@ -110,19 +116,17 @@ simple_init(A,b,N,x);
                 }
                 x_new[i]=x[i]-tay*(correction-b[i]);
             }
+           
+           
             
-            {
             free(x);
             x=x_new;
-            }
+        
+            top=(double*)calloc(N,sizeof(double));
+            top_module=0;
             
 
-
-            double* top=(double*)calloc(N,sizeof(double));
-            double top_module=0;
-            
-
-            #pragma omp parallel for 
+            #pragma omp parallel for
             for(int i=0;i<N;i++)
             {
                 top[i]=0;
@@ -133,22 +137,23 @@ simple_init(A,b,N,x);
                 top[i]-=b[i];
             }
             
-             #pragma omp parallel for
+            #pragma omp parallel for reduction(+:top_module)
             for(int i=0;i<N;i++)
             {
                 top_module+=top[i]*top[i];
             }
+          
             top_module=sqrt(top_module);
             free(top);
-            double bot_module=0;
+            bot_module=0;
             
-             #pragma omp parallel for 
+            
+           #pragma omp parallel for reduction(+:bot_module)
             for(int i=0;i<N;i++)
             {
                 bot_module+=b[i]*b[i];
             }
-           
-              
+       
                 bot_module=sqrt(bot_module);
                 if(top_module/bot_module<eps)
                 {
@@ -160,10 +165,14 @@ simple_init(A,b,N,x);
                     //printf("\n%f\n", top_module/bot_module);
                 
                     is_good_answer=false;
-                } 
-                       
-          }
-        
+                }
+              
+              if(is_good_answer){
+                break;
+              }          
+            
+        }
+    
      
  
  
@@ -171,11 +180,10 @@ simple_init(A,b,N,x);
 
  
 
-
-clock_t end= clock();
+        double end = omp_get_wtime();
 
     puts("\n");
-    printf("time=%d\n", (end-start));
+    printf("time=%f\n", (end-start));
    // for(int i=0;i<N;i++){printf("%f ,  %f\n",x[i],0);}
 
     return 0;
