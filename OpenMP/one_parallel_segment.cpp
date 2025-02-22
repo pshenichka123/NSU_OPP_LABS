@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <time.h>
+#include <omp.h>
 static const double eps=0.00001;
 static const double tay=0.00001;
 
@@ -84,13 +85,12 @@ double* A=(double*)calloc(N*N,sizeof(double));
 double* b=(double*)calloc(N,sizeof(double));
 double* x=(double*)calloc(N,sizeof(double));
 
-double* u;
 
 //u=strong_init(A,b,N);
 puts("aaa\n");
 
 simple_init(A,b,N,x);
- clock_t start= clock();
+double start = omp_get_wtime();
  bool is_good_answer=false;
  puts("after init\n");
 
@@ -98,17 +98,16 @@ simple_init(A,b,N,x);
  double* top;
 double bot_module;
     double top_module;
-     while (!is_good_answer)  
+    #pragma omp parallel
+    {
+    while (true)  
         {
-        #pragma omp parallel
-            {
-          
-            {
+        
           #pragma omp single    
             x_new=(double*)calloc(N,sizeof(double));
             
 
-        #pragma omp for
+        #pragma omp for schedule(dynamic,10)
             for(int i=0;i<N;i++)
             {
                 double correction=0;
@@ -128,7 +127,7 @@ double bot_module;
             top_module=0;
             }
 
-            #pragma omp for
+            #pragma omp for schedule(dynamic,10)
             for(int i=0;i<N;i++)
             {
                 top[i]=0;
@@ -139,7 +138,7 @@ double bot_module;
                 top[i]-=b[i];
             }
             
-            #pragma omp for
+            #pragma omp for reduction(+:top_module)
             for(int i=0;i<N;i++)
             {
                 top_module+=top[i]*top[i];
@@ -151,12 +150,12 @@ double bot_module;
             bot_module=0;
             }
             
-           #pragma omp for
+           #pragma omp for reduction(+:bot_module)
             for(int i=0;i<N;i++)
             {
                 bot_module+=b[i]*b[i];
             }
-           
+           #pragma omp single
               {
                 bot_module=sqrt(bot_module);
                 if(top_module/bot_module<eps)
@@ -169,11 +168,14 @@ double bot_module;
                     //printf("\n%f\n", top_module/bot_module);
                 
                     is_good_answer=false;
-                } 
-              }            
-            }
+                }
+              }  
+              if(is_good_answer){
+                break;
+              }          
+            
         }
-        }
+    }
      
  
  
@@ -181,11 +183,10 @@ double bot_module;
 
  
 
-
-clock_t end= clock();
+        double end = omp_get_wtime();
 
     puts("\n");
-    printf("time=%d\n", (end-start));
+    printf("time=%f\n", (end-start));
    // for(int i=0;i<N;i++){printf("%f ,  %f\n",x[i],0);}
 
     return 0;
