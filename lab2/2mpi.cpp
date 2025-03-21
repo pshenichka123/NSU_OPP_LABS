@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <mpi.h>
-#define N 17280
+int N;
 using namespace std;
 
 int num_of_proc;
@@ -120,9 +120,9 @@ int main(int argc, char* argv[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_of_proc);
     MPI_Comm_rank(MPI_COMM_WORLD, &proc_rank);
-    const double epsilon = pow(10, -9);
-
-    InitRowsPerProcess(N);  //Разрезаем матрицу
+    const double epsilon = pow(10, -5);
+    N = atoi(argv[1]);
+    InitRowsPerProcess(N);
     Context cont = Context(N, epsilon);
     buffer = new double[N];
 

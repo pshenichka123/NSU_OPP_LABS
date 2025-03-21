@@ -1,61 +1,85 @@
+#include<cmath>
+#include <cstdlib>
+#include <cstdio>
 #include <iostream>
-#include <cmath>
 #include <mpi.h>
-#define N 17280
-using namespace std;
 
-int num_of_proc;
-int proc_rank;
-double* buffer;
 int* dataStarts;
 int* dataLengths;
+int proc_rank;
+int num_of_proc;
+int N;
 
-double Norm(const double* u, const int size) {
-    double res = 0;
-    for (int i = 0; i < size; i++) {
-        res += u[i] * u[i];
-    }
-    return sqrt(res);
-}
-
-void mult(const double* matrix, const double* vect, double* result, int size) {
-    for (int i = 0; i < dataLengths[proc_rank]; i++) {
-        double sum = 0;
-        for (int j = 0; j < size; j++) {
-            sum += matrix[i * size + j] * vect[j];
-        }
-        result[i] = sum;
-    }
-}
+using namespace std;
 
 void mult(double* a, const int size, const double tau) {
     for (int i = 0; i < size; i++) {
         a[i] *= tau;
     }
 }
+
+void clear_mult_res(double* a)
+{
+    for (int i = 0;i < dataLengths[0];i++)
+    {
+        a[i] = 0;
+    }
+}
+
+void shiftData(double* x)
+{
+
+    MPI_Sendrecv_replace(x, dataLengths[0], MPI_DOUBLE, (proc_rank + num_of_proc + 1) % num_of_proc, 3, (proc_rank + num_of_proc - 1) % num_of_proc, 3, MPI_COMM                                                                                                 _WORLD, MPI_STATUS_IGNORE);
+
+}
+
+void mult(double* matrix, double* vect, double* res, const int size) {
+    int currRank = proc_rank;
+    int offset = 0;
+    clear_mult_res(res);
+    for (int iter = 0;iter < num_of_proc;iter++)
+    {
+        offset = dataStarts[currRank];
+        for (int i = 0;i < dataLengths[proc_rank];i++)
+        {
+            double sum = 0;
+            for (int j = dataStarts[currRank];j < dataLengths[currRank] + dataSt arts[currRank];j++)
+            {
+                sum += matrix[i * size + j] * vect[j - offset];
+            }
+
+            res[i] += sum;
+        }
+        shiftData(vect);
+        currRank = (currRank + num_of_proc - 1) % num_of_proc;
+    }
+
+}
+
 void sub(const double* a, const double* b, double* c, const int size) {
     for (int i = 0; i < size; i++) {
         c[i] = a[i] - b[i];
     }
 }
+
 struct Context {
     double* A;
     double* x;
     double* b;
     double tau;
-    double* vMult;    //A*x^n
-    double* vSub;     //A*x^n - b
+    double* multRes;
+    double* subRes;
     const int size;
     const double epsilon;
+
     Context(const int n, const double epsilon) : size(n), epsilon(epsilon) {
         A = new double[size * dataLengths[proc_rank]];
-        x = new double[size];
-        b = new double[size];
+        x = new double[dataLengths[0]];
+        b = new double[dataLengths[0]];
         tau = 0.0001;
-        vMult = new double[dataLengths[proc_rank]];
-        vSub = new double[dataLengths[proc_rank]];
-
-        for (int i = 0; i < size; i++) {
+        multRes = new double[dataLengths[0]];
+        subRes = new double[dataLengths[0]];
+        for (int i = 0; i < dataLengths[proc_rank]; i++) {
             x[i] = 0;
             b[i] = size + 1;
         }
@@ -68,38 +92,54 @@ struct Context {
                     A[i * size + j] = 1.0;
                 }
             }
+
         }
     }
     ~Context() {
         delete[] A;
         delete[] x;
         delete[] b;
-        delete[] vMult;
-        delete[] vSub;
+        delete[] multRes;
+        delete[] subRes;
     }
 };
-void gatherVector(double* from, double* to) {
-    MPI_Allgatherv(from, dataLengths[proc_rank], MPI_DOUBLE, to, dataLengths, dataStarts, MPI_DOUBLE, MPI_COMM_WORLD);
+
+
+
+double Norm(double* A)
+{
+    double sum = 0;
+    for (int i = 0;i < dataLengths[proc_rank];i++)
+    {
+        sum += A[i] * A[i];
+    }
+    double result = 0;
+    MPI_Allreduce(&sum, &result, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+
+    result = sqrt(result);
+
+    return result;
 }
 
 bool isCloseEnough(Context& cont) {
-    mult(cont.A, cont.x, cont.vMult, cont.size);
-    sub(cont.vMult, cont.b, cont.vSub, dataLengths[proc_rank]);
-    gatherVector(cont.vSub, buffer);
-    double res = Norm(buffer, cont.size) / Norm(cont.b, cont.size);
-    return res < cont.epsilon;
-}
+    mult(cont.A, cont.x, cont.multRes, cont.size);
+    sub(cont.multRes, cont.b, cont.subRes, dataLengths[proc_rank]);
+    double res = Norm(cont.subRes) / Norm(cont.b);
 
+
+    return res < cont.epsilon;
+
+}
 void next(Context& cont) {
-    mult(cont.A, cont.x, cont.vMult, cont.size);
-    sub(cont.vMult, cont.b, cont.vSub, dataLengths[proc_rank]);
-    mult(cont.vSub, dataLengths[proc_rank], cont.tau);
-    sub(cont.x, cont.vSub, cont.vMult, dataLengths[proc_rank]);
-    gatherVector(cont.vMult, cont.x);
+    mult(cont.A, cont.x, cont.multRes, cont.size);
+    sub(cont.multRes, cont.b, cont.subRes, dataLengths[proc_rank]);
+    mult(cont.subRes, dataLengths[proc_rank], cont.tau);
+    sub(cont.x, cont.subRes, cont.x, dataLengths[proc_rank]);
 }
 void InitRowsPerProcess(int n) {
-    dataStarts = new int[n];
-    dataLengths = new int[n];
+    dataStarts = new int[num_of_proc];
+    dataLengths = new int[num_of_proc];
     int perProcess = n / num_of_proc;
     int ost = n % num_of_proc;
     int start = 0;
@@ -113,6 +153,7 @@ void InitRowsPerProcess(int n) {
         dataLengths[i] = perProcess;
         start += perProcess;
     }
+
 }
 
 int main(int argc, char* argv[]) {
@@ -120,21 +161,25 @@ int main(int argc, char* argv[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_of_proc);
     MPI_Comm_rank(MPI_COMM_WORLD, &proc_rank);
-    const double epsilon = pow(10, -9);
-
-    InitRowsPerProcess(N);  //Разрезаем матрицу
+    const double epsilon = pow(10, -5);
+    N = atoi(argv[1]);
+    InitRowsPerProcess(N);
     Context cont = Context(N, epsilon);
-    buffer = new double[N];
 
     begin = MPI_Wtime();
     while (!isCloseEnough(cont)) {
+
         next(cont);
+
+
     }
     end = MPI_Wtime();
+    printf("%f\n", cont.x[0]);
+    printf("%f\n", cont.x[3]);
+    printf("%f\n", cont.x[4]);
 
     cout << "Time diff = " << (end - begin) << "[s]" << endl;
     delete[] dataStarts;
     delete[] dataLengths;
-    delete[] buffer;
     MPI_Finalize();
 }
