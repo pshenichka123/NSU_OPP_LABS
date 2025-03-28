@@ -1,9 +1,9 @@
 #include <iostream>
 #include <mpi.h>
 
-#define M 256
-#define N 256
-#define K 256
+#define M 3000
+#define N 3000
+#define K 3000
 
 using namespace std;
 
@@ -15,24 +15,24 @@ void initMatrix(double* matrix, int n, int m, double val) {
     }
 }
 
-void mult(int* matrixSizes, double* A, double* B, double* C, int* gridSizes, MPI_Comm comm) {
-    double* submA = nullptr;
-    double* submB = nullptr;
-    double* submC = nullptr;
+void mult(int *matrixSizes, double *A, double *B, double *C, int *gridSizes, MPI_Comm comm) {
+    double *submA = nullptr;
+    double *submB = nullptr;
+    double *submC = nullptr;
     int submSizes[2];
 
     int coords[2];
     int rank;
 
-    int* sendcountsB = nullptr;
-    int* displsScatterB = nullptr;
+    int *sendcountsB = nullptr;
+    int *displsScatterB = nullptr;
 
-    int* recvcountsGatherC = nullptr;
-    int* displsGatherC = nullptr;
+    int *recvcountsGatherC = nullptr;
+    int *displsGatherC = nullptr;
 
     MPI_Datatype typeB, typeC, types[2];
-    int blockLengths[2] = { 1, 1 };
-    int periods[2] = { 0, 0 };
+    int blockLengths[2] = {1, 1};
+    int periods[2] = {0, 0};
     int remainDims[2];
 
     MPI_Comm comm2d;
@@ -66,7 +66,7 @@ void mult(int* matrixSizes, double* A, double* B, double* C, int* gridSizes, MPI
         MPI_Type_extent(MPI_DOUBLE, &size);
         types[1] = MPI_UB;
 
-        long int* displacements = new long int[2];
+        long int *displacements = new long int[2];
         displacements[0] = 0;
         displacements[1] = size * submSizes[1];
 
@@ -112,9 +112,13 @@ void mult(int* matrixSizes, double* A, double* B, double* C, int* gridSizes, MPI
     int m = submSizes[1];
     int n = matrixSizes[1];
     for (int i = 0; i < submSizes[0]; i++) {
-        for (int j = 0; j < m; j++) {
-            submC[i * m + j] = 0;
-            for (int k = 0; k < n; k++) {
+        for(int j=0;j<m;j++){
+        submC[i*m+j]=0;
+        }
+
+        for (int k = 0; k < n; k++) {
+
+            for (int j = 0; j < m; j++) {
                 submC[i * m + j] += submA[n * i + k] * submB[m * k + j];
             }
         }
@@ -142,14 +146,14 @@ void mult(int* matrixSizes, double* A, double* B, double* C, int* gridSizes, MPI
 
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     double begin, end;
     int size, rank;
     int matrixSizes[3];
     int gridSizes[2];
-    double* A = nullptr;
-    double* B = nullptr;
-    double* C = nullptr;
+    double *A = nullptr;
+    double *B = nullptr;
+    double *C = nullptr;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -157,7 +161,7 @@ int main(int argc, char* argv[]) {
 
     if (argc != 3) {
         if (rank == 0) {
-            cout << "Empty grid size" << endl;
+            cout << "Empty grid size"<<endl;
         }
         exit(1);
     }
@@ -166,14 +170,14 @@ int main(int argc, char* argv[]) {
     int p2 = atoi(argv[2]);
     if (p1 == 0 || p2 == 0) {
         if (rank == 0) {
-            cout << "Invalid grid size" << endl;
+            cout << "Invalid grid size"<<endl;
         }
         exit(1);
     }
 
     if (size != p1 * p2) {
         if (rank == 0) {
-            cout << "Wrong grid size" << endl;
+            cout << "Wrong grid size"<<endl;
         }
         exit(1);
     }
@@ -199,7 +203,7 @@ int main(int argc, char* argv[]) {
     end = MPI_Wtime();
 
     if (rank == 0) {
-        cout << "Time taken: " << end - begin << " [s]" << endl;
+        cout << "Time taken: " << end - begin << " [s]"<<endl;
         delete[] A;
         delete[] B;
         delete[] C;
