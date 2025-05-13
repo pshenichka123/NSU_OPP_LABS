@@ -1,0 +1,233 @@
+Total MPI processes: 16
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn229.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+cn219.hpc.nusc.ru
+Starting runs with 1 threads...
+Starting run 1 with 1 threads ...
+Time taken: 18.779503 [s]
+Run 1 with 1 threads  completed.
+Starting run 2 with 1 threads ...
+Time taken: 18.789016 [s]
+Run 2 with 1 threads  completed.
+Starting run 3 with 1 threads ...
+Time taken: 18.795244 [s]
+Run 3 with 1 threads  completed.
+Starting run 4 with 1 threads ...
+Time taken: 18.777569 [s]
+Run 4 with 1 threads  completed.
+Starting run 5 with 1 threads ...
+Time taken: 18.777030 [s]
+Run 5 with 1 threads  completed.
+All 5 runs with 1 threads completed.
+Starting runs with 2 threads...
+Starting run 1 with 2 threads ...
+Time taken: 10.314141 [s]
+Time taken: 10.314137 [s]
+Run 1 with 2 threads  completed.
+Starting run 2 with 2 threads ...
+Time taken: 10.309357 [s]
+Time taken: 10.309343 [s]
+Run 2 with 2 threads  completed.
+Starting run 3 with 2 threads ...
+Time taken: 10.311266 [s]
+Time taken: 10.311164 [s]
+Run 3 with 2 threads  completed.
+Starting run 4 with 2 threads ...
+Time taken: 10.316149 [s]
+Time taken: 10.316135 [s]
+Run 4 with 2 threads  completed.
+Starting run 5 with 2 threads ...
+Time taken: 10.316962 [s]
+Time taken: 10.316996 [s]
+Run 5 with 2 threads  completed.
+All 5 runs with 2 threads completed.
+Starting runs with 4 threads...
+Starting run 1 with 4 threads ...
+Time taken: 5.474989 [s]
+Time taken: 5.475006 [s]
+Time taken: 5.475091 [s]
+Time taken: 5.475061 [s]
+Run 1 with 4 threads  completed.
+Starting run 2 with 4 threads ...
+Time taken: 5.480662 [s]
+Time taken: 5.480738 [s]
+Time taken: 5.480678 [s]
+Time taken: 5.480768 [s]
+Run 2 with 4 threads  completed.
+Starting run 3 with 4 threads ...
+Time taken: 5.478644 [s]
+Time taken: 5.478679 [s]
+Time taken: 5.478705 [s]
+Time taken: 5.478638 [s]
+Run 3 with 4 threads  completed.
+Starting run 4 with 4 threads ...
+Time taken: 5.472564 [s]
+Time taken: 5.472676 [s]
+Time taken: 5.472621 [s]
+Time taken: 5.472712 [s]
+Run 4 with 4 threads  completed.
+Starting run 5 with 4 threads ...
+Time taken: 5.473715 [s]
+Time taken: 5.473767 [s]
+Time taken: 5.473814 [s]
+Time taken: 5.473823 [s]
+Run 5 with 4 threads  completed.
+All 5 runs with 4 threads completed.
+Starting runs with 8 threads...
+Starting run 1 with 8 threads ...
+Time taken: 2.775851 [s]
+Time taken: 2.776300 [s]
+Time taken: 2.776403 [s]
+Time taken: 2.776407 [s]
+Time taken: 2.776399 [s]
+Time taken: 2.776429 [s]
+Time taken: 2.776441 [s]
+Time taken: 2.776444 [s]
+Run 1 with 8 threads  completed.
+Starting run 2 with 8 threads ...
+Time taken: 2.707128 [s]
+Time taken: 2.707099 [s]
+Time taken: 2.707253 [s]
+Time taken: 2.707266 [s]
+Time taken: 2.707271 [s]
+Time taken: 2.707282 [s]
+Time taken: 2.707290 [s]
+Time taken: 2.707303 [s]
+Run 2 with 8 threads  completed.
+Starting run 3 with 8 threads ...
+Time taken: 2.770033 [s]
+Time taken: 2.770380 [s]
+Time taken: 2.770427 [s]
+Time taken: 2.770526 [s]
+Time taken: 2.770497 [s]
+Time taken: 2.770596 [s]
+Time taken: 2.770602 [s]
+Time taken: 2.770626 [s]
+Run 3 with 8 threads  completed.
+Starting run 4 with 8 threads ...
+Time taken: 2.767166 [s]
+Time taken: 2.767449 [s]
+Time taken: 2.767532 [s]
+Time taken: 2.767674 [s]
+Time taken: 2.767822 [s]
+Time taken: 2.767835 [s]
+Time taken: 2.767847 [s]
+Time taken: 2.767814 [s]
+Run 4 with 8 threads  completed.
+Starting run 5 with 8 threads ...
+Time taken: 2.770997 [s]
+Time taken: 2.771054 [s]
+Time taken: 2.770987 [s]
+Time taken: 2.771107 [s]
+Time taken: 2.771084 [s]
+Time taken: 2.771092 [s]
+Time taken: 2.771127 [s]
+Time taken: 2.771132 [s]
+Run 5 with 8 threads  completed.
+All 5 runs with 8 threads completed.
+Starting runs with 16 threads...
+Starting run 1 with 16 threads ...
+Time taken: 1.369982 [s]
+Time taken: 1.369978 [s]
+Time taken: 1.369999 [s]
+Time taken: 1.369986 [s]
+Time taken: 1.369990 [s]
+Time taken: 1.369983 [s]
+Time taken: 1.369998 [s]
+Time taken: 1.369979 [s]
+Time taken: 1.369978 [s]
+Time taken: 1.369980 [s]
+Time taken: 1.369974 [s]
+Time taken: 1.369990 [s]
+Time taken: 1.369976 [s]
+Time taken: 1.369995 [s]
+Time taken: 1.369965 [s]
+Time taken: 1.369978 [s]
+Run 1 with 16 threads  completed.
+Starting run 2 with 16 threads ...
+Time taken: 1.363223 [s]
+Time taken: 1.363174 [s]
+Time taken: 1.363218 [s]
+Time taken: 1.363205 [s]
+Time taken: 1.363222 [s]
+Time taken: 1.363188 [s]
+Time taken: 1.363225 [s]
+Time taken: 1.363188 [s]
+Time taken: 1.363201 [s]
+Time taken: 1.363192 [s]
+Time taken: 1.363200 [s]
+Time taken: 1.363214 [s]
+Time taken: 1.363202 [s]
+Time taken: 1.363202 [s]
+Time taken: 1.363196 [s]
+Time taken: 1.363205 [s]
+Run 2 with 16 threads  completed.
+Starting run 3 with 16 threads ...
+Time taken: 1.366263 [s]
+Time taken: 1.366227 [s]
+Time taken: 1.366273 [s]
+Time taken: 1.366260 [s]
+Time taken: 1.366287 [s]
+Time taken: 1.366241 [s]
+Time taken: 1.366291 [s]
+Time taken: 1.366258 [s]
+Time taken: 1.366262 [s]
+Time taken: 1.366272 [s]
+Time taken: 1.366274 [s]
+Time taken: 1.366258 [s]
+Time taken: 1.366247 [s]
+Time taken: 1.366277 [s]
+Time taken: 1.366245 [s]
+Time taken: 1.366260 [s]
+Run 3 with 16 threads  completed.
+Starting run 4 with 16 threads ...
+Time taken: 1.363533 [s]
+Time taken: 1.363546 [s]
+Time taken: 1.363527 [s]
+Time taken: 1.363532 [s]
+Time taken: 1.363545 [s]
+Time taken: 1.363546 [s]
+Time taken: 1.363531 [s]
+Time taken: 1.363536 [s]
+Time taken: 1.363538 [s]
+Time taken: 1.363530 [s]
+Time taken: 1.363577 [s]
+Time taken: 1.363544 [s]
+Time taken: 1.363555 [s]
+Time taken: 1.363512 [s]
+Time taken: 1.363575 [s]
+Time taken: 1.363550 [s]
+Run 4 with 16 threads  completed.
+Starting run 5 with 16 threads ...
+Time taken: 1.362524 [s]
+Time taken: 1.362490 [s]
+Time taken: 1.362550 [s]
+Time taken: 1.362507 [s]
+Time taken: 1.362550 [s]
+Time taken: 1.362510 [s]
+Time taken: 1.362535 [s]
+Time taken: 1.362499 [s]
+Time taken: 1.362506 [s]
+Time taken: 1.362524 [s]
+Time taken: 1.362504 [s]
+Time taken: 1.362516 [s]
+Time taken: 1.362511 [s]
+Time taken: 1.362525 [s]
+Time taken: 1.362505 [s]
+Time taken: 1.362529 [s]
+Run 5 with 16 threads  completed.
+All 5 runs with 16 threads completed.
+All runs completed.
